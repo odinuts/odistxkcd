@@ -1,29 +1,32 @@
 package com.odinuts.odistforxkcd.ui;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.odinuts.odistforxkcd.R;
-import com.odinuts.odistforxkcd.model.XkcdResponse;
-import com.odinuts.odistforxkcd.util.XkcdAPI;
+import com.odinuts.odistforxkcd.data.model.XkcdResponse;
+import com.odinuts.odistforxkcd.ui.home.HomeContract;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements HomeContract.View {
+    private HomeContract.UserActionsListener userActionsListener;
     volatile int currentComic;
+    private int progressStatus = 0;
+    private Handler handler = new Handler();
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
     @BindView(R.id.xkcd_comic)
     ImageView comicImage;
     @BindView(R.id.next_button)
@@ -33,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.next_button)
     public void next() {
-        getNextComic();
+        userActionsListener.getNextComic(currentComic);
+    }
+
+    @OnClick(R.id.previous_button)
+    public void previous() {
+        userActionsListener.getPreviousComic(currentComic);
     }
 
     @Override
@@ -42,58 +50,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getDefaultComic();
     }
 
-    private void getDefaultComic() {
-        final XkcdAPI xkcdAPI = XkcdAPI.retrofit.create(XkcdAPI.class);
-        final Call<XkcdResponse> xkcdResponseCall = xkcdAPI.getDefaultComic();
-        xkcdResponseCall.enqueue(new Callback<XkcdResponse>() {
-            @Override
-            public void onResponse(Call<XkcdResponse> call, Response<XkcdResponse> response) {
-                if (response.isSuccessful()) {
-                    XkcdResponse xkcdResponse = response.body();
-                    updateUI(xkcdResponse);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<XkcdResponse> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    private void updateUI(XkcdResponse xkcdResponse) {
-        currentComic = xkcdResponse.getNum();
+    @Override
+    public void updateUI(XkcdResponse xkcdResponse) {
         getSupportActionBar().setTitle("Comic #" + xkcdResponse.getNum() +
-                ": " + xkcdResponse.getTitle());
-        Picasso.with(MainActivity.this).load(xkcdResponse.getImg()).into(comicImage);
+                " " + xkcdResponse.getTitle());
+        Picasso.with(this).load(xkcdResponse.getImg()).into(comicImage);
     }
 
-    private void getNextComic() {
-        if (currentComic != 0) {
-            currentComic++;
-            getSpecificComic(currentComic);
-        }
+    @Override
+    public void showProgress() {
+        // implement a progress bar
     }
 
-    private void getSpecificComic(int currentComic) {
-        final XkcdAPI xkcdAPI = XkcdAPI.retrofit.create(XkcdAPI.class);
-        final Call<XkcdResponse> xkcdResponseCall = xkcdAPI.getSpecificComic(currentComic);
-        xkcdResponseCall.enqueue(new Callback<XkcdResponse>() {
-            @Override
-            public void onResponse(Call<XkcdResponse> call, Response<XkcdResponse> response) {
-                if (response.isSuccessful()) {
-                    XkcdResponse xkcdResponse = response.body();
-                    updateUI(xkcdResponse);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<XkcdResponse> call, Throwable t) {
-
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
