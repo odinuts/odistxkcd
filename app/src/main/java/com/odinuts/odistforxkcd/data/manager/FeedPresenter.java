@@ -4,17 +4,17 @@ import android.support.annotation.NonNull;
 
 import com.odinuts.odistforxkcd.data.model.XkcdResponse;
 import com.odinuts.odistforxkcd.data.network.XkcdAPI;
-import com.odinuts.odistforxkcd.ui.home.HomeContract;
+import com.odinuts.odistforxkcd.ui.FeedContract;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class APIPresenter implements HomeContract.UserActionsListener {
+public class FeedPresenter implements FeedContract.UserActionsListener {
     @NonNull
-    private final HomeContract.View mainView;
+    private final FeedContract.View mainView;
 
-    public APIPresenter(@NonNull HomeContract.View mainView) {
+    public FeedPresenter(@NonNull FeedContract.View mainView) {
         this.mainView = mainView;
     }
 
