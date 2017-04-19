@@ -1,6 +1,4 @@
-package com.odinuts.odistforxkcd.data.network;
-
-import com.odinuts.odistforxkcd.data.model.XkcdResponse;
+package com.odinuts.odistforxkcd;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;

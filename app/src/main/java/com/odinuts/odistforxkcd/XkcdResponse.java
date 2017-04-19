@@ -1,4 +1,4 @@
-package com.odinuts.odistforxkcd.data.model;
+package com.odinuts.odistforxkcd;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
