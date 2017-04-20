@@ -2,6 +2,7 @@ package com.odinuts.odistforxkcd;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -54,7 +55,8 @@ public class FeedActivity extends AppCompatActivity {
      }*/
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    private List<XkcdResponse> responseList;
+    volatile List<XkcdResponse> responseList;
+    volatile int currentComicNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +79,7 @@ public class FeedActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     // initViews(response);
                     responseList.add(response.body());
+                    currentComicNumber = response.body().getNum();
                     initRecyclerView();
                 }
             }
@@ -92,13 +95,15 @@ public class FeedActivity extends AppCompatActivity {
         StaggeredGridLayoutManager layoutManager =
                 new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(
                 FeedActivity.this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(new FeedAdapter(responseList));
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
-                getDefaultComic();
+                currentComicNumber--;
+                getSpecificComic(currentComicNumber);
             }
         });
     }
@@ -111,6 +116,9 @@ public class FeedActivity extends AppCompatActivity {
             public void onResponse(Call<XkcdResponse> call, Response<XkcdResponse> response) {
                 if (response.isSuccessful()) {
                     // initViews(response);
+                    responseList.add(response.body());
+                    currentComicNumber = response.body().getNum();
+                    initRecyclerView();
                 }
             }
 
