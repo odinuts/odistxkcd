@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Odist for XKCD</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="random">Random</string>
-    <string name="comic_title">Title</string>
-    <string name="comic_date">Date</string>
-    <string name="title_activity_photo_viewer">PhotoViewer</string>
-    <string name="comic_number">Number</string>
+  <string name="app_name">Odist for XKCD</string>
+  <string name="next">Next</string>
+  <string name="previous">Previous</string>
+  <string name="random">Random</string>
+  <string name="comic_title">Title</string>
+  <string name="comic_date">Date</string>
+  <string name="title_activity_photo_viewer">PhotoViewer</string>
+  <string name="comic_number">Number</string>
 </resources>
