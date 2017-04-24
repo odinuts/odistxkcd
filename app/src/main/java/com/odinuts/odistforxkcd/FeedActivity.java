@@ -19,6 +19,8 @@ public class FeedActivity extends AppCompatActivity {
 
   XkcdAPI xkcdAPI;
   volatile int index = 0;
+  volatile String title = null;
+
   @BindView(R.id.progress_bar) ProgressBar progressBar;
   @BindView(R.id.image) ImageView image;
   @BindView(R.id.next) Button next;
@@ -26,17 +28,14 @@ public class FeedActivity extends AppCompatActivity {
   @BindView(R.id.random) Button random;
 
   @OnClick(R.id.next) public void getNext() {
-    progressBar.setVisibility(View.VISIBLE);
     getNextComic(index);
   }
 
   @OnClick(R.id.previous) public void getPrev() {
-    progressBar.setVisibility(View.VISIBLE);
     getPreviousComic(index);
   }
 
   @OnClick(R.id.random) public void getRand() {
-    progressBar.setVisibility(View.VISIBLE);
     getRandomComic(index);
   }
 
@@ -54,6 +53,7 @@ public class FeedActivity extends AppCompatActivity {
     xkcdResponseCall.enqueue(new Callback<XkcdResponse>() {
       @Override public void onResponse(Call<XkcdResponse> call, Response<XkcdResponse> response) {
         if (response.isSuccessful()) {
+          title = response.body().getTitle();
           index = response.body().getNum();
           initViews(response);
         }
@@ -71,6 +71,7 @@ public class FeedActivity extends AppCompatActivity {
     xkcdResponseCall.enqueue(new Callback<XkcdResponse>() {
       @Override public void onResponse(Call<XkcdResponse> call, Response<XkcdResponse> response) {
         if (response.isSuccessful()) {
+          title = response.body().getTitle();
           index = response.body().getNum();
           initViews(response);
         }
