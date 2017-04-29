@@ -17,6 +17,7 @@ import retrofit2.Response;
 
 public class FeedActivity extends AppCompatActivity {
 
+  public static final String KEY_NUMBER = "number";
   XkcdAPI xkcdAPI;
   volatile int index = 0;
   volatile String title = null;
@@ -44,6 +45,11 @@ public class FeedActivity extends AppCompatActivity {
     setContentView(R.layout.activity_feed);
     ButterKnife.bind(this);
     progressBar.setVisibility(View.VISIBLE);
+    if (savedInstanceState != null) {
+      if (savedInstanceState.containsKey(KEY_NUMBER)) {
+        getSpecificComic(savedInstanceState.getInt(KEY_NUMBER));
+      }
+    }
     getDefaultComic();
   }
 
@@ -111,5 +117,10 @@ public class FeedActivity extends AppCompatActivity {
     Random random = new Random();
     currentIndex = random.nextInt(currentIndex) + 1;
     getSpecificComic(currentIndex);
+  }
+
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt(KEY_NUMBER, index);
   }
 }
